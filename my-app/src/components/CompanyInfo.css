@@ -1,0 +1,115 @@
+/* ================================
+   Company Info – Modern Glass UI
+   ================================ */
+
+.company-container {
+  padding: 2rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #e8e8e8;
+  width: 100%;
+}
+
+/* Title */
+.company-title {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: #aee4ff;
+  text-shadow: 0 0 10px rgba(0, 180, 255, 0.4);
+}
+
+/* Grid Layout */
+.company-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+}
+
+/* Card Style */
+.company-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 1.8rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.company-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
+  border-color: rgba(135, 206, 255, 0.6);
+}
+
+/* Drop Icon */
+.company-header::after {
+  content: "⌄";
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  font-size: 22px;
+  color: #89d3ff;
+  transition: 0.3s ease;
+}
+
+/* Rotated on expand */
+.company-card.expanded .company-header::after {
+  transform: rotate(180deg);
+}
+
+/* Header */
+.company-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.company-header h3 {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #6ecbff;
+}
+
+/* Symbol + Sector */
+.symbol {
+  font-size: 0.95rem;
+  color: #b6d7ff;
+}
+
+.sector {
+  font-size: 1rem;
+  margin-top: 5px;
+  color: #d8edff;
+}
+
+/* Expandable Details */
+.company-details {
+  margin-top: 1.4rem;
+  font-size: 1rem;
+  color: #f3f9ff;
+  line-height: 1.6;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 1.2rem;
+
+  /* Smooth animation */
+  animation: detailsFade 0.35s ease forwards;
+}
+
+/* Keyframes */
+@keyframes detailsFade {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

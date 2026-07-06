@@ -1,0 +1,148 @@
+/* ===== GRID WRAPPER ===== */
+.stock-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* ===== STOCK CARD ===== */
+.stock-card {
+    background: #0f1624;
+    padding: 25px;
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.35);
+    transition: 0.3s ease;
+}
+
+.stock-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 30px rgba(0,0,0,0.45);
+}
+
+/* ===== QUANTITY BUTTONS ===== */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.qty-btn {
+    background: #222;
+    color: white;
+    padding: 6px 12px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+/* ===== ADD STOCK / BUY BUTTON ===== */
+.add-stock-btn {
+    width: 100%;
+    background: #66d26f;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 18px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+/* ===== LOAD MORE BUTTON ===== */
+.load-more-btn {
+    margin: 30px auto;
+    padding: 12px 28px;
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+    background: #3a86ff;
+    color: white;
+    cursor: pointer;
+}
+
+/* ================================
+   ⭐ BUY MODAL STYLES (NEW)
+   ================================ */
+
+/* Dark screen overlay */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+/* Modal box */
+.modal-box {
+    background: #101827;
+    padding: 25px;
+    border-radius: 12px;
+    width: 360px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+/* Input fields */
+.modal-box input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+    background: #0b1120;
+    color: white;
+    font-size: 14px;
+}
+
+/* QR code container */
+.qr-box {
+    margin: 20px 0;
+}
+
+/* Buttons container */
+.modal-btns {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Cancel button */
+.cancel-btn {
+    background: #4b5563;
+    border: none;
+    padding: 10px 18px;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.cancel-btn:hover {
+    background: #6b7280;
+}
+
+/* Confirm button */
+.confirm-btn {
+    background: #22c55e;
+    border: none;
+    padding: 10px 18px;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.confirm-btn:hover {
+    background: #16a34a;
+}

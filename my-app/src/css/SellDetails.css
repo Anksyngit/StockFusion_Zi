@@ -1,0 +1,78 @@
+.sell-container {
+  padding: 30px;
+  color: white;
+  animation: fadeIn 0.6s ease;
+}
+
+.sell-title {
+  text-align: center;
+  font-size: 36px;
+  margin-bottom: 20px;
+  color: #87d3ff;
+  text-shadow: 0 0 8px rgba(0, 150, 255, 0.6);
+}
+
+.sell-search {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: white;
+  outline: none;
+  font-size: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.sell-search::placeholder {
+  color: #cccccc;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* MAIN FIX ADDED HERE */
+.sell-table tr {
+  display: table-row;
+}
+
+.sell-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.sell-table th,
+.sell-table td {
+  padding: 14px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  white-space: nowrap; /* prevents stacking */
+}
+
+.sell-table th {
+  background: rgba(0, 150, 255, 0.2);
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.sell-table tr:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transition: 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

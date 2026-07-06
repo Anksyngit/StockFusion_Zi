@@ -1,0 +1,115 @@
+/* Main container like Sell Details */
+.transactions-container {
+  width: 85%;
+  margin: 40px auto;
+  padding: 30px;
+  background: linear-gradient(145deg, #0d1525, #111c2e);
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  color: white;
+}
+
+/* Title like Sell Details */
+.transactions-container h2 {
+  text-align: center;
+  font-size: 38px;
+  font-weight: 700;
+  color: #8cbcff;
+  margin-bottom: 10px;
+}
+
+/* Month filter aligned like search bar */
+.month-filter {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.month-filter label {
+  font-size: 18px;
+  margin-right: 10px;
+  color: #cbd5e1;
+}
+
+.month-filter select {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #1b2538;
+  color: white;
+  border: 1px solid #3757a1;
+  outline: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Table container with rounded corners */
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+/* Table headers like Sell Details */
+.transactions-table th {
+  background: #355ca8;
+  padding: 14px;
+  font-size: 17px;
+  color: #ffffff;
+}
+
+/* Table rows look like Sell Details */
+.transactions-table td {
+  background: #0f1a2e;
+  color: #e2e8f0;
+  padding: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  text-align: center;
+}
+
+/* Hover effect */
+.transactions-table tbody tr:hover td {
+  background: #152338;
+  transition: 0.2s;
+}
+
+/* BUY / SELL styling same as before */
+.buy {
+  color: #22c55e !important;
+  font-weight: bold;
+}
+
+.sell {
+  color: #ef4444 !important;
+  font-weight: bold;
+}
+
+/* Last row border fix */
+.transactions-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Download buttons styled to match Sell Details */
+.download-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.download-btn {
+  padding: 12px 20px;
+  background: #355ca8;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.download-btn:hover {
+  background: #436dc6;
+  transform: translateY(-2px);
+}
