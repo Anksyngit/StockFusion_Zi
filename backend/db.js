@@ -1,26 +1,31 @@
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-const dotenv = require ('dotenv')
-const mongoose = require ('mongoose')
-dotenv.config();
- const url = "mongodb://127.0.0.1:27017/stockdb"
-;
+const url = process.env.MONGO_URI;
+
 const connectDB = async () => {
-    try {
-        await mongoose.connect(url, {          
-        });
-        console.log('Database is connected');
-    } catch (err) {
-        console.error('Error connecting to the database:', err);
-        process.exit(1);
-    }
-  };
-mongoose.connection.on("disconnected",()=>{
-  console.log("Database disconnected");
-})
-mongoose.connection.on("connected",()=>{
-  console.log("Database connected");
-})
+  try {
+    await mongoose.connect(url);
+
+    console.log("✅ Database connected successfully");
+  } catch (err) {
+    console.error("❌ Error connecting to the database:");
+    console.error(err);
+    process.exit(1);
+  }
+};
+
+// Connection Events
+mongoose.connection.on("connected", () => {
+  console.log("🟢 MongoDB Connected");
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.log("🔴 MongoDB Disconnected");
+});
+
+mongoose.connection.on("error", (err) => {
+  console.log("❌ MongoDB Error:", err);
+});
 
 module.exports = connectDB;
-
-

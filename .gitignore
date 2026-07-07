@@ -1,20 +1,60 @@
-node_modules
-# Python
-venv/
-*.pyc
-__pycache__/
-
-# Node
+# =========================
+# Node.js
+# =========================
 node_modules/
+build/
+dist/
+coverage/
+
+# =========================
+# Environment Variables
+# =========================
 .env
-api_keys.txt
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================
+# Python
+# =========================
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
 
 # Jupyter
-*.ipynb_checkpoints/
+.ipynb_checkpoints/
 
-# Big files
-*.h5
-*.pkl
-*.csv
-# Python virtual environment
-venv/
+# =========================
+# IDE
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# Operating System
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Secrets
+# =========================
+api_keys.txt
+apikey.txt
+
+# =========================
+# TensorFlow / Model
+# =========================
+# DO NOT ignore lstm_model.h5
+# It is required for deployment.
