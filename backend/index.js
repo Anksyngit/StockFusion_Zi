@@ -8,54 +8,69 @@ const Auth = require("./routes/auth");
 
 const app = express();
 
-// Middleware
 app.use(express.json());
 
-// Allowed Origins
+// ============================
+// CORS
+// ============================
+
 const allowedOrigins = [
   "http://localhost:8080",
+  "http://localhost:3000",
   process.env.FRONTEND_URL,
 ];
 
-// CORS Configuration
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (Postman, mobile apps, etc.)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+      console.log("Incoming Origin:", origin);
+
+      if (!origin) {
+        return callback(null, true);
       }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
     },
-    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-// Test Route
+app.options("*", cors());
+
+// ============================
+// Routes
+// ============================
+
 app.get("/", (req, res) => {
   res.send("Backend is alive!");
 });
 
-// Routes
 app.use("/api/auth", Auth);
 app.use("/Portfolio", Portfolio);
 
+// ============================
 // Error Handler
-app.use((err, req, res, next) => {
-  const errStatus = err.status || 500;
-  const errMessage = err.message || "Something went wrong!";
+// ============================
 
-  res.status(errStatus).json({
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  res.status(err.status || 500).json({
     success: false,
-    status: errStatus,
-    message: errMessage,
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    message: err.message || "Something went wrong!",
   });
 });
 
+// ============================
 // Start Server
+// ============================
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
