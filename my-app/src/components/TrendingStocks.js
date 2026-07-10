@@ -9,7 +9,7 @@ export default function TrendingStocks() {
   useEffect(() => {
     const fetchTrendingStocks = async () => {
       try {
-        const response = await fetch("http://localhost:3000/Portfolio/trending");
+       const response = await fetch(`${process.env.REACT_APP_API_URL}/Portfolio/trending`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

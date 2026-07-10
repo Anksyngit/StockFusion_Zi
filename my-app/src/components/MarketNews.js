@@ -9,8 +9,10 @@ const MarketNews = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/Portfolio/market-news");
-        setNews(response.data && Array.isArray(response.data) ? response.data : []);
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/Portfolio/market-news`
+        );
+        setNews(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error("Error fetching news:", error);
       }

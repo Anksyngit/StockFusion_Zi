@@ -6,16 +6,35 @@ export default function SellDetails() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3000/Portfolio/transactions", {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    })
-      .then((res) => res.json())
-      .then((allTx) => {
+    const fetchSellDetails = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/Portfolio/transactions`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP Error: ${response.status}`);
+        }
+
+        const allTx = await response.json();
+
+        console.log("Transactions:", allTx);
+
         const sells = allTx.filter((t) => t.type === "SELL");
+
         setData(sells);
-      });
+      } catch (error) {
+        console.error("Error fetching sell details:", error);
+      }
+    };
+
+    fetchSellDetails();
   }, []);
 
   const filtered = data.filter((t) =>
@@ -51,17 +70,25 @@ export default function SellDetails() {
           </thead>
 
           <tbody>
-            {filtered.map((t, i) => (
-              <tr key={i} className="row">
-                <td>{t.name}</td>
-                <td>{t.symbol}</td>
-                <td>{t.quantity}</td>
-                <td>${t.price}</td>
-                <td>{t.buyerName}</td>
-                <td>{t.buyerArea}</td>
-                <td>{new Date(t.date).toLocaleString()}</td>
+            {filtered.length > 0 ? (
+              filtered.map((t, i) => (
+                <tr key={i}>
+                  <td>{t.name}</td>
+                  <td>{t.symbol}</td>
+                  <td>{t.quantity}</td>
+                  <td>${t.price}</td>
+                  <td>{t.buyerName}</td>
+                  <td>{t.buyerArea}</td>
+                  <td>{new Date(t.date).toLocaleString()}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" style={{ textAlign: "center" }}>
+                  No sell records found.
+                </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

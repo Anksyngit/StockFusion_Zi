@@ -11,7 +11,7 @@ export default function Signup() {
     e.preventDefault();
     const { name, email, password } = credential;
     try {
-      const response = await fetch("http://localhost:3000/api/auth/createU", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/createU`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),

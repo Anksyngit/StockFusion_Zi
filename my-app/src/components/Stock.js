@@ -1,27 +1,17 @@
 import React, { useContext, useEffect } from "react";
 import StockContext from "../context/StockContext";
 import Stockitem from "./Stockitem";
-// import Addnote from './Addnote';
-// import { useNavigate } from 'react-router-dom';
 
-export default function Stock(props) {
+export default function Stock() {
+  console.log("✅ Stock component rendered");
+
   const context = useContext(StockContext);
-
-  // let navigate = useNavigate();
   const { stocks, getAllStock } = context;
 
-  // const { Aleartset } = props
-  // const [stock, setstock] = useState({
-  //   Symbol: "",
-  //   name: "",
-  //   quantity: "",
-  //   purchasePrice: "",
-  //   currentPrice: "",
-  // });
-
   useEffect(() => {
+    console.log("🚀 Calling getAllStock...");
     getAllStock();
-  }, [getAllStock]);
+  }, []);
 
   return (
     <>

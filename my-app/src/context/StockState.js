@@ -5,97 +5,118 @@ import axios from "axios";
 const StockState = (props) => {
   const [stocks, setStocks] = useState([]);
 
-  // Get token from localStorage
   const getAuthToken = () => localStorage.getItem("token");
 
   // =============================
   // GET ALL STOCKS
   // =============================
   const getAllStock = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/Portfolio/getall", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getAuthToken(),
-        },
-      });
+    console.log("📌 getAllStock() started");
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+    console.log("🌐 API URL:", process.env.REACT_APP_API_URL);
+    console.log("🔑 Token:", getAuthToken());
+
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/Portfolio/getall`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: getAuthToken(),
+          },
+        }
+      );
+
+      console.log("📡 Response Status:", response.status);
 
       const json = await response.json();
-      setStocks(json);
+
+      console.log("📦 Response Data:", json);
+
+      setStocks(Array.isArray(json) ? json : []);
     } catch (error) {
-      console.error("Fetch error:", error.message);
+      console.error("❌ Fetch Error:", error);
     }
   };
 
-  // Refresh portfolio after change
+  // =============================
+  // Refresh Portfolio
+  // =============================
   const refreshPortfolio = async () => {
     await getAllStock();
   };
 
   // =============================
-  // ADD STOCK (BUY)
+  // BUY STOCK
   // =============================
   const addStock = async (symbol, name, quantity, price) => {
     try {
-      const response = await fetch("http://localhost:3000/Portfolio/CreateS", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getAuthToken(),
-        },
-        body: JSON.stringify({ symbol, name, quantity, price }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/Portfolio/CreateS`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: getAuthToken(),
+          },
+          body: JSON.stringify({
+            symbol,
+            name,
+            quantity,
+            price,
+          }),
+        }
+      );
 
       const stock = await response.json();
-      setStocks([...stocks, stock]);
-      refreshPortfolio();
+
+      console.log("✅ Buy Response:", stock);
+
+      await refreshPortfolio();
     } catch (error) {
-      console.error("Error adding stock:", error);
+      console.error("❌ Buy Error:", error);
     }
   };
 
   // =============================
-  // SELL STOCK (UPDATED)
+  // SELL STOCK
   // =============================
-  const sellStock = async (symbol, quantity, price, buyerName, buyerArea) => {
+  const sellStock = async (
+    symbol,
+    quantity,
+    price,
+    buyerName,
+    buyerArea
+  ) => {
     try {
-      const response = await fetch("http://localhost:3000/Portfolio/sell", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: getAuthToken(),
-        },
-        body: JSON.stringify({
-          symbol,
-          quantity,
-          price,
-          buyerName,
-          buyerArea,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/Portfolio/sell`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: getAuthToken(),
+          },
+          body: JSON.stringify({
+            symbol,
+            quantity,
+            price,
+            buyerName,
+            buyerArea,
+          }),
+        }
+      );
 
       const data = await response.json();
 
-      if (!response.ok) {
-        console.error("Sell failed:", data);
-        return false;
-      }
+      console.log("💰 Sell Response:", data);
 
-      // ⭐ Refresh user's portfolio so Sell Details updates immediately
       await refreshPortfolio();
 
-      return data;  // return actual backend data instead of true
+      return data;
     } catch (error) {
-      console.error("Error selling stock:", error);
+      console.error("❌ Sell Error:", error);
       return false;
     }
   };
@@ -105,23 +126,23 @@ const StockState = (props) => {
   // =============================
   const fetchCurrentPrice = async (symbol) => {
     const API_KEY = process.env.REACT_APP_ALPHA_VANTAGE_API_KEY;
+
     const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${API_KEY}`;
 
     try {
       const response = await axios.get(url);
+
       const data = response.data;
 
       const price = data?.["Global Quote"]?.["05. price"];
+
       return price ? parseFloat(price).toFixed(2) : 150;
     } catch (error) {
-      console.error(`Error fetching price for ${symbol}:`, error);
+      console.error("Price Error:", error);
       return "N/A";
     }
   };
 
-  // =============================
-  // RETURN PROVIDER
-  // =============================
   return (
     <StockContext.Provider
       value={{

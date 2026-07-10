@@ -12,7 +12,7 @@ export default function Transactions() {
 
   const fetchTransactionHistory = async () => {
     try {
-      const response = await fetch("http://localhost:3000/Portfolio/transactions", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/Portfolio/transactions`, {
         method: "GET",
         headers: {
           Authorization: localStorage.getItem("token"),
@@ -65,7 +65,7 @@ export default function Transactions() {
 
   const downloadFile = async (format) => {
     try {
-      const response = await fetch(`http://localhost:3000/Portfolio/export/${format}`, {
+      const response = await fetch(`process.env.REACT_APP_API_URL/Portfolio/export/${format}`, {
         method: "GET",
         headers: {
           Authorization: localStorage.getItem("token"),

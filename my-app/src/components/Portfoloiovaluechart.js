@@ -17,7 +17,7 @@ export default function PortfolioValueChart() {
   useEffect(() => {
     const fetchPortfolioData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/Portfolio/History", {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/Portfolio/History`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
