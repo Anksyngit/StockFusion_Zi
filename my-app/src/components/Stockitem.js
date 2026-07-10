@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import StockContext from "../context/StockContext";
 import axios from "axios";
-import '../css/Stockitem.css';
+import "../css/Stockitem.css";
 import {
   LineChart,
   Line,
@@ -22,14 +22,12 @@ export default function StockCard(props) {
   const [profitLoss, setProfitLoss] = useState(0);
   const [chartData, setChartData] = useState([]);
 
-  // Sell modal states
   const [showSellModal, setShowSellModal] = useState(false);
   const [sellQuantity, setSellQuantity] = useState(1);
 
   const [buyerName, setBuyerName] = useState("");
   const [buyerArea, setBuyerArea] = useState("");
 
-  // OTP states
   const [generatedOtp, setGeneratedOtp] = useState("");
   const [otpInput, setOtpInput] = useState("");
 
@@ -37,13 +35,22 @@ export default function StockCard(props) {
     const getCurrentPrice = async () => {
       try {
         const price = await fetchCurrentPrice(stock.symbol);
-        setCurrentPrice(price ? Number(price) : 150);
 
-        const profitLossValue = (price - stock.purchasePrice) * stock.quantity;
-        setTotalValue(stock.quantity * price);
-        setProfitLoss(profitLossValue);
+        const numericPrice = Number(price || 150);
+
+        setCurrentPrice(numericPrice);
+
+        setTotalValue(stock.quantity * numericPrice);
+
+        setProfitLoss(
+          (numericPrice - stock.purchasePrice) * stock.quantity
+        );
       } catch (error) {
         console.error("Error fetching stock price:", error);
+
+        setCurrentPrice(150);
+        setTotalValue(stock.quantity * 150);
+        setProfitLoss((150 - stock.purchasePrice) * stock.quantity);
       }
     };
 
@@ -53,21 +60,33 @@ export default function StockCard(props) {
           `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stock.symbol}&apikey=${API_KEY}`
         );
 
-        if (!response.data || !response.data["Time Series (Daily)"]) {
-          throw new Error("No historical data available");
+        // AlphaVantage daily limit reached
+        if (response.data.Note) {
+          console.log("AlphaVantage limit reached. Using fallback chart.");
+          throw new Error("Rate limit");
         }
 
         const timeSeries = response.data["Time Series (Daily)"];
-        const historicalData = Object.entries(timeSeries || {})
-          .slice(0, 7)
-          .map(([date, data]) => ({
-            date,
-            price: parseFloat(data["4. close"]) || 0,
-          }));
 
-        setChartData(historicalData.reverse());
+        if (!timeSeries) {
+          console.log(
+            `No historical data available for ${stock.symbol}.`
+          );
+          throw new Error("No historical data");
+        }
+
+        const historicalData = Object.entries(timeSeries)
+          .slice(0, 7)
+          .map(([date, values]) => ({
+            date,
+            price: parseFloat(values["4. close"]),
+          }))
+          .reverse();
+
+        setChartData(historicalData);
       } catch (error) {
-        console.error("Error fetching historical data:", error);
+        console.log(`Using fallback chart for ${stock.symbol}`);
+
         setChartData([
           { date: "2025-03-01", price: 150 },
           { date: "2025-03-02", price: 152 },
@@ -82,9 +101,8 @@ export default function StockCard(props) {
 
     getCurrentPrice();
     getHistoricalData();
-  }, [stock.symbol, fetchCurrentPrice, stock.quantity, stock.purchasePrice]);
+  }, [stock.symbol, stock.quantity, stock.purchasePrice, fetchCurrentPrice]);
 
-  // SELL HANDLER with OTP
   const handleConfirmSell = async () => {
     if (!buyerName.trim() || !buyerArea.trim()) {
       alert("Please enter buyer name and area.");
@@ -112,6 +130,7 @@ export default function StockCard(props) {
 
       if (success) {
         alert("Stock sold successfully!");
+
         setShowSellModal(false);
         setSellQuantity(1);
         setBuyerName("");
@@ -121,38 +140,63 @@ export default function StockCard(props) {
         alert("Error selling stock.");
       }
     } catch (error) {
-      console.error("Sell error:", error);
+      console.error("Sell Error:", error);
       alert("Failed to sell stock.");
     }
   };
 
   return (
     <div className="stock-card">
-      <h3 className="stock-name">{stock.name} ({stock.symbol})</h3>
+      <h3 className="stock-name">
+        {stock.name} ({stock.symbol})
+      </h3>
 
       <div className="stock-info">
-        <p><strong>Quantity:</strong> {stock.quantity}</p>
-        <p><strong>Purchase Price:</strong> ${stock.purchasePrice.toFixed(2)}</p>
-        <p><strong>Current Price:</strong>  
-          {currentPrice !== null ? `$${Number(currentPrice).toFixed(2)}` : "Loading..."}  
+        <p>
+          <strong>Quantity:</strong> {stock.quantity}
         </p>
-        <p><strong>Total Value:</strong> {totalValue !== null ? `$${totalValue.toFixed(2)}` : "Calculating..."}</p>
-        <p className={`profit-loss ${profitLoss >= 0 ? "profit" : "loss"}`}>
-          <strong>Profit/Loss:</strong> ${profitLoss.toFixed(2)}
+
+        <p>
+          <strong>Purchase Price:</strong> $
+          {Number(stock.purchasePrice).toFixed(2)}
+        </p>
+
+        <p>
+          <strong>Current Price:</strong>{" "}
+          {currentPrice !== null
+            ? `$${currentPrice.toFixed(2)}`
+            : "Loading..."}
+        </p>
+
+        <p>
+          <strong>Total Value:</strong>{" "}
+          {totalValue !== null
+            ? `$${totalValue.toFixed(2)}`
+            : "Calculating..."}
+        </p>
+
+        <p
+          className={`profit-loss ${
+            profitLoss >= 0 ? "profit" : "loss"
+          }`}
+        >
+          <strong>Profit/Loss:</strong> $
+          {profitLoss.toFixed(2)}
         </p>
       </div>
 
-      {/* SELL BUTTON */}
       <div className="sell-section">
         <h5>Sell Stock</h5>
 
         <input
+          className="sell-input"
           type="number"
           min="1"
           max={stock.quantity}
           value={sellQuantity}
-          onChange={(e) => setSellQuantity(Number(e.target.value))}
-          className="sell-input"
+          onChange={(e) =>
+            setSellQuantity(Number(e.target.value))
+          }
         />
 
         <button
@@ -160,8 +204,10 @@ export default function StockCard(props) {
           onClick={() => {
             setShowSellModal(true);
 
-            // Generate OTP for sale
-            const otp = Math.floor(1000 + Math.random() * 9000).toString();
+            const otp = Math.floor(
+              1000 + Math.random() * 9000
+            ).toString();
+
             setGeneratedOtp(otp);
             setOtpInput("");
           }}
@@ -170,78 +216,93 @@ export default function StockCard(props) {
         </button>
       </div>
 
-      {/* PRICE TREND CHART */}
       <div className="chart-container">
         <h5>7-Day Price Trend</h5>
+
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={chartData}>
-            <XAxis dataKey="date" tick={{ fontSize: 12, fill: "#666" }} tickLine={false} />
-            <YAxis domain={["auto", "auto"]} tick={{ fontSize: 12, fill: "#666" }} />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "white",
-                borderRadius: "8px",
-                border: "none",
-                boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
-              }}
-              labelStyle={{ fontWeight: "bold", color: "#333" }}
-              cursor={{ stroke: "#4f46e5", strokeWidth: 1 }}
-            />
+            <XAxis dataKey="date" />
+
+            <YAxis />
+
+            <Tooltip />
+
             <Line
               type="monotone"
               dataKey="price"
               stroke="#4f46e5"
               strokeWidth={3}
-              dot={{ stroke: "#4f46e5", strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, fill: "#4f46e5", stroke: "#fff", strokeWidth: 2 }}
+              dot={{ r: 4 }}
+              activeDot={{ r: 6 }}
             />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
-      {/* SELL MODAL */}
       {showSellModal && (
         <div className="modal-overlay">
           <div className="modal-box">
             <h2>Sell {stock.name}</h2>
 
-            <p><strong>Quantity:</strong> {sellQuantity}</p>
-            <p><strong>Price:</strong> ${currentPrice}</p>
+            <p>
+              <strong>Quantity:</strong> {sellQuantity}
+            </p>
+
+            <p>
+              <strong>Price:</strong> ${currentPrice}
+            </p>
 
             <label>Buyer Name</label>
+
             <input
               type="text"
               value={buyerName}
-              onChange={(e) => setBuyerName(e.target.value)}
+              onChange={(e) =>
+                setBuyerName(e.target.value)
+              }
             />
 
             <label>Buyer Area</label>
+
             <input
               type="text"
               value={buyerArea}
-              onChange={(e) => setBuyerArea(e.target.value)}
+              onChange={(e) =>
+                setBuyerArea(e.target.value)
+              }
             />
 
             <div className="otp-box">
               <p>Your OTP is:</p>
-              <h2 style={{ color: "#4ade80" }}>{generatedOtp}</h2>
+
+              <h2 style={{ color: "#4ade80" }}>
+                {generatedOtp}
+              </h2>
 
               <input
+                className="otp-input"
                 type="text"
                 maxLength="4"
-                className="otp-input"
                 placeholder="Enter OTP"
                 value={otpInput}
-                onChange={(e) => setOtpInput(e.target.value)}
+                onChange={(e) =>
+                  setOtpInput(e.target.value)
+                }
               />
             </div>
 
             <div className="modal-btns">
-              <button className="cancel-btn" onClick={() => setShowSellModal(false)}>
+              <button
+                className="cancel-btn"
+                onClick={() => setShowSellModal(false)}
+              >
                 Cancel
               </button>
 
-              <button className="confirm-btn" onClick={handleConfirmSell}>
+              <button
+                className="confirm-btn"
+                onClick={handleConfirmSell}
+              >
                 Confirm Sell
               </button>
             </div>
