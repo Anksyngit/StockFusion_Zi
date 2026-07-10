@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import StockContext from "./StockContext";
 import axios from "axios";
 
@@ -10,7 +10,7 @@ const StockState = (props) => {
   // =============================
   // GET ALL STOCKS
   // =============================
-  const getAllStock = async () => {
+  const getAllStock = useCallback(async () => {
     console.log("📌 getAllStock() started");
 
     console.log("🌐 API URL:", process.env.REACT_APP_API_URL);
@@ -38,7 +38,7 @@ const StockState = (props) => {
     } catch (error) {
       console.error("❌ Fetch Error:", error);
     }
-  };
+  }, []);
 
   // =============================
   // Refresh Portfolio

@@ -11,7 +11,7 @@ export default function Stock() {
   useEffect(() => {
     console.log("🚀 Calling getAllStock...");
     getAllStock();
-  }, []);
+  }, [getAllStock]);
 
   return (
     <>
